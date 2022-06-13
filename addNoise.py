@@ -5,6 +5,7 @@ import numpy as np
 import random
 import csv
 from scipy.io import wavfile
+from tqdm import tqdm
 
 def get_filepaths(directory):
       file_paths = []  
@@ -55,7 +56,7 @@ def add_noise(clean_wav_path, noise_wav_path, SNR, return_info=False):
 
       P_c = np.dot(y_clean, y_clean) #/ len(y_clean)
       P_n = np.dot(noise, noise) #/ len(noise)
-      print("Check SNR:",10*math.log10((P_c/P_n)))
+      #print("Check SNR:",10*math.log10((P_c/P_n)))
 
       if return_info is False:
             return y_noisy, clean_rate
@@ -67,15 +68,15 @@ def add_noise(clean_wav_path, noise_wav_path, SNR, return_info=False):
 
 
 noise_path = "/path/to/noise/dir"
-clean_path = "/path/to/clean/wav"
-Noisy_path = "/path/to/output/wav"
+clean_path = "/path/to/clean/dir"
+Noisy_path = "/path/to/output/dir"
 
 noise_list = get_filepaths(noise_path)
 clean_list = get_filepaths(clean_path)
 
 
-SNR_list = [-10,-7,-4,-1,1,4,7,10] 
-num_of_copy = 2 #randomly select how many types of noise
+SNR_list = [-1,1,3,5] # SNR list
+num_of_copy = 25      # #randomly select how many types of noise in the noise dir
 
 for snr in SNR_list:
 
@@ -83,18 +84,18 @@ for snr in SNR_list:
             fieldNames = ['wav','noise', 'start','end']
             writer = csv.DictWriter(csvFile, fieldNames)
             writer.writeheader()
-            for clean_wav_path in clean_list:
-
+            for clean_wav_path in tqdm(clean_list):
+                  
                   noise_wav_path_list = random.sample(noise_list, num_of_copy)
-                  #noise_wav_path_list = noise_list #mix with all noise in the dir
+                  #noise_wav_path_list = noise_list
 
                   for noise_wav_path in noise_wav_path_list:
                         y_noisy, clean_rate, info = add_noise(clean_wav_path, noise_wav_path, snr, True)
                         noise_name = noise_wav_path.split(os.sep)[-1].split(".")[0]
-                        output_dir = Noisy_path+os.sep+str(snr)+os.sep+noise_name
+                        output_dir = Noisy_path+os.sep+str(snr)#+os.sep+noise_name
                         creat_dir(output_dir)
-                        wav_name = clean_wav_path.split(os.sep)[-1]
-                        librosa.output.write_wav( output_dir+os.sep+wav_name, y_noisy, clean_rate) 
+                        wav_name = clean_wav_path.split(os.sep)[-1].split(".")[0]+"_snr"+str(snr)+"_"+noise_name+".wav"
+                        wavfile.write(output_dir+os.sep+wav_name, clean_rate, y_noisy)
                         writer.writerow({'wav':wav_name,'noise':noise_name, 'start':info['start'], 'end':info['end']})
 
 
