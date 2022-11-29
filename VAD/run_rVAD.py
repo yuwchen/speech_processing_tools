@@ -1,8 +1,17 @@
 import os, sys, pdb
 import numpy as np
 from rVAD_fast import rVAD_fast
-from data_loader import get_filepaths
 from tqdm import tqdm
+
+
+def get_filepaths(directory):
+      file_paths = []  
+      for root, _, files in os.walk(directory):
+            for filename in files:
+                  filepath = os.path.join(root, filename)
+                  if filename.endswith('.wav'):
+                        file_paths.append(filepath)  
+      return file_paths 
 
 
 def createdir(directory):
@@ -10,7 +19,7 @@ def createdir(directory):
         os.makedirs(directory)
         
 def VAD(wavpath):
-    path_list = get_filepaths(wavpath, ".wav")
+    path_list = get_filepaths(wavpath)
         
     for path in tqdm(path_list):
         
