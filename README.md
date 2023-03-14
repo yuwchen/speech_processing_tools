@@ -5,3 +5,6 @@ Contaminated wave files with noise
 
 Voice activity detection (VAD)
 - VAD
+
+ASR
+- whisper_asr_seg.py #code for using whipser
