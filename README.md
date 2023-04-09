@@ -8,3 +8,6 @@ Voice activity detection (VAD)
 
 ASR
 - whisper_asr_seg.py #code for using whipser
+
+Forced alignment:
+- alignment_api.py #forced alignment using wav2vec
