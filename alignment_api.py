@@ -230,11 +230,15 @@ def main():
     cuda = False
     aligner = Wav2Vec2Aligner(model_name, input_wavs_sr, cuda)
 
-    wav_path = ['/Users/yuwen/Downloads/sample.wav'
-                ]
-    transcript_list = ['I had that curiosity beside me at this moment']
+    wav_path = ['path/to/wav1.wav','path/to/wav2.wav']
+    transcript_list = ['transcript of wav1', 'transcript of wav2']
     result = aligner.align_data(wav_path, transcript_list, '')
-    print(result)
+    print(result) 
+    #result:[ 
+    # [(transcript, start_sample_point, end_sample_point), (of, start_sample_point, end_sample_point), (wav1, start_sample_point, end_sample_point)],
+    # [(transcript, start_sample_point, end_sample_point), (of, start_sample_point, end_sample_point), (wav2, start_sample_point, end_sample_point)]
+    #]
+    
 
 
 if __name__ == "__main__":
